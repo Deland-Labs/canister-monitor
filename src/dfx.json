@@ -1,0 +1,26 @@
+{
+    "canisters": {
+      "monitor": {
+        "type": "rust",
+        "package": "monitor",
+        "candid": "canisters/monitor/src/monitor.did"
+      },
+      "dicp": {
+        "type": "custom",
+        "candid": "node_modules/@deland-labs/dft_all_features_server/index.did",
+        "wasm": "node_modules/@deland-labs/dft_all_features_server/index.wasm"
+      }
+    },
+    "defaults": {
+      "build": {
+        "packtool": ""
+      }
+    },
+    "networks": {
+      "local": {
+        "bind": "127.0.0.1:8000",
+        "type": "ephemeral"
+      }
+    },
+    "version": 1
+  }

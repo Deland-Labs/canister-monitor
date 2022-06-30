@@ -1,1 +1,1 @@
-# canister-monitor
+# canister-template

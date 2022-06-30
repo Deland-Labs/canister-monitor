@@ -1,0 +1,91 @@
+type BooleanActorResponse = variant { Ok : bool; Err : ErrorInfo };
+type CreateNameOrderRequest = record {
+  name : text;
+  price : nat;
+  order_target_user : OrderTargetUser;
+};
+type CreateOrderResponse = record { order_id : nat64 };
+type CreateQuotaOrderRequest = record {
+  diff : nat32;
+  quota_type : QuotaType;
+  price : nat;
+  order_target_user : OrderTargetUser;
+};
+type ErrorInfo = record { code : nat32; message : text };
+type GetPageInput = record { offset : nat64; limit : nat64 };
+type ICNSError = variant {
+  RemoteError : ErrorInfo;
+  OrderPriceZeroError;
+  UserOrderOperationExpirationTimeError;
+  BoxPriceSettingError;
+  OrderOwnerError;
+  OrderTargetUserError;
+  OrderDiffZeroError;
+  OrderStatusError;
+  OrderNotFoundError;
+  BoxRewardSettingError;
+  ValueShouldBeInRangeError : record { max : nat64; min : nat64; field : text };
+  InvalidPriceRangeError;
+  Unauthorized;
+  OrderTargetUserSelfError;
+  CanisterCallError : record { message : text; rejection_code : text };
+  NoMoreTaskError;
+  UserOrderSumMaxError;
+};
+type NameOrderDTO = record {
+  name : text;
+  order_id : nat64;
+  price : nat;
+  order_target_user : OrderTargetUser;
+};
+type NameOrderListResponse = record { name_order_list : vec NameOrderDTO };
+type OrderListResponse = record {
+  quota_order_list : vec QuotaOrderDTO;
+  name_order_list : vec NameOrderDTO;
+};
+type OrderState = variant { InTrading; Sending; Cancelled; Created; Completed };
+type OrderTargetUser = variant { TRUE : principal; FALSE };
+type OrderType = variant { Name : text; Quota : record { QuotaType; nat32 } };
+type QuotaOrderDTO = record {
+  diff : nat32;
+  quota_type : QuotaType;
+  order_id : nat64;
+  price : nat;
+  order_target_user : OrderTargetUser;
+};
+type QuotaOrderListResponse = record { quota_order_list : vec QuotaOrderDTO };
+type QuotaType = variant { LenEq : nat8; LenGte : nat8 };
+type Result = variant { Ok : CreateOrderResponse; Err : ICNSError };
+type Result_1 = variant { Ok : vec UserOrderDTO; Err : ICNSError };
+type Result_2 = variant { Ok : NameOrderListResponse; Err : ICNSError };
+type Result_3 = variant { Ok : QuotaOrderListResponse; Err : ICNSError };
+type Result_4 = variant { Ok : UserOrderDTO; Err : ICNSError };
+type Result_5 = variant { Ok : OrderListResponse; Err : ICNSError };
+type Result_6 = variant { Ok : BooleanActorResponse; Err : ICNSError };
+type UserOrderDTO = record {
+  user : principal;
+  state : OrderState;
+  order_type : OrderType;
+  order_id : nat64;
+  price : nat;
+  order_target_user : OrderTargetUser;
+};
+service : {
+  cancel_order : (nat64) -> (Result);
+  create_name_order : (CreateNameOrderRequest) -> (Result);
+  create_quota_order : (CreateQuotaOrderRequest) -> (Result);
+  find_my_orders : (GetPageInput) -> (Result_1) query;
+  find_my_trading_name_orders : (GetPageInput) -> (Result_2) query;
+  find_my_trading_quota_orders : (GetPageInput) -> (Result_3) query;
+  find_order : (nat64) -> (Result_4) query;
+  find_orders : (GetPageInput) -> (Result_5) query;
+  find_orders_fuzzy : (
+      opt OrderType,
+      nat,
+      nat,
+      opt OrderTargetUser,
+      GetPageInput,
+    ) -> (Result_5) query;
+  match_order : (nat64) -> (Result_6);
+  task_send_quota : () -> (Result_6);
+}

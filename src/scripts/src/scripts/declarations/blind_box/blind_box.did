@@ -1,0 +1,35 @@
+type BooleanActorResponse = variant { Ok : bool; Err : ErrorInfo };
+type ErrorInfo = record { code : nat32; message : text };
+type ICNSError = variant {
+  RemoteError : ErrorInfo;
+  OrderPriceZeroError;
+  UserOrderOperationExpirationTimeError;
+  BoxPriceSettingError;
+  OrderOwnerError;
+  OrderTargetUserError;
+  OrderDiffZeroError;
+  OrderStatusError;
+  OrderNotFoundError;
+  BoxRewardSettingError;
+  ValueShouldBeInRangeError : record { max : nat64; min : nat64; field : text };
+  InvalidPriceRangeError;
+  Unauthorized;
+  OrderTargetUserSelfError;
+  CanisterCallError : record { message : text; rejection_code : text };
+  NoMoreTaskError;
+  UserOrderSumMaxError;
+};
+type OpenBoxResponse = record { open_box_result : vec QuotaType };
+type QuotaType = variant { LenEq : nat8; LenGte : nat8 };
+type Result = variant { Ok : BooleanActorResponse; Err : ICNSError };
+type Result_1 = variant { Ok : OpenBoxResponse; Err : ICNSError };
+type Result_2 = variant { Ok : text; Err : ICNSError };
+type Result_3 = variant { Ok : nat; Err : ICNSError };
+service : {
+  admin_set_box_price : (nat) -> (Result);
+  open_box : (nat32) -> (Result_1);
+  query_admin : () -> (Result_2) query;
+  query_price : () -> (Result_3) query;
+  task_send_quota : () -> (Result);
+  task_send_reward : () -> (Result);
+}
