@@ -1,4 +1,4 @@
 npx icdev pack \
-    --package-scope icnaming \
-    --canister-env-name NAMING_CANISTER_ENV \
+    --package-scope deland-labs \
+    --canister-env-name MONITOR_CANISTER_ENV \
     --production-canister-env production

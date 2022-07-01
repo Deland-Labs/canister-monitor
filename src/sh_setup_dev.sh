@@ -1,6 +1,4 @@
-npm cache clear --force
 npm config set @deland-labs:registry https://www.myget.org/F/ic-feed/npm/
-npm config set @icnaming:registry https://www.myget.org/F/icnaming/npm/
 npm install -g yarn
 npm install
 npx icdev init-identity

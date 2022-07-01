@@ -10,7 +10,7 @@ Given(/^Check Monitor Status$/, async function () {
 
 
     await addMonitorAsController('dicp');
-    const actor = await createMonitorActor('icnaming_monitor');
+    const actor = await createMonitorActor('monitor');
     const targetCanisterId = canister.get_id('dicp')
     logger.debug("dicp:", targetCanisterId);
     const result = await actor.get_canister_status(Principal.fromText(targetCanisterId));
@@ -24,7 +24,7 @@ Given(/^Check Monitor Status$/, async function () {
 Given(/^Check Monitors Status$/, async function () {
     await addMonitorAsController('dicp');
     await addMonitorAsController('monitor');
-    const actor = await createMonitorActor('icnaming_monitor');
+    const actor = await createMonitorActor('monitor');
 
     let targetCanisterIds = [canister.get_id('dicp'), canister.get_id('monitor')];
     targetCanisterIds = targetCanisterIds.map(a => Principal.fromText(a));

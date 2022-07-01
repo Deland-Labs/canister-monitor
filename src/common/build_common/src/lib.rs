@@ -9,7 +9,7 @@ pub fn generate_envs() -> Result<()> {
     vergen(Config::default())?;
 
     println!("rerun-if-env-changed=NAMING_CANISTER_ENV");
-    let env = if let Some(env) = option_env!("NAMING_CANISTER_ENV") {
+    let env = if let Some(env) = option_env!("MONITOR_CANISTER_ENV") {
         env
     } else {
         "dev"
