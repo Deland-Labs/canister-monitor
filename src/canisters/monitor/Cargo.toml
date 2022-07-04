@@ -15,7 +15,7 @@ serde_bytes = "0.11"
 log = "0.4"
 common = { path = "../../common/common" }
 thiserror = "1.0"
-anyhow = "1.0.57"
+anyhow = "1.0.58"
 
 [dev-dependencies]
 test_common = { path = "../../common/test_common" }
