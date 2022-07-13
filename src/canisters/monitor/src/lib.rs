@@ -3,9 +3,9 @@ mod service;
 mod shared_actor;
 
 use crate::service::MonitorService;
-use candid::{candid_method, CandidType, Deserialize, Nat, Principal};
+use candid::{candid_method, CandidType, Deserialize, Principal};
 use common::canister_api::ic_impl::CanisterIdRequest;
-use common::canister_api::{CanisterStatus, CanisterStatusResponse, DefiniteCanisterSettings};
+use common::canister_api::{CanisterStatusResponse};
 use common::errors::{ErrorInfo, ServiceResult};
 use common::ic_logger::ICLogger;
 use common::permissions::must_be_monitor;
@@ -13,7 +13,7 @@ use ic_cdk::api;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use ic_cdk_macros::*;
-use log::{debug, info};
+use log::{info};
 use std::sync::Once;
 use std::vec::Vec;
 
@@ -25,7 +25,7 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
     if result.is_err() {
         return GetCanisterStatusResponse::new(Err(result.err().unwrap().into()));
     }
-    let service = MonitorService::default();
+    let _service = MonitorService::default();
     let result: CallResult<(CanisterStatusResponse, )> = call(
         Principal::management_canister(),
         "canister_status",
@@ -48,7 +48,7 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
     if result.is_err() {
         return GetCanisterStatusListResponse::new(Err(result.err().unwrap().into()));
     }
-    let service = MonitorService::default();
+    let _service = MonitorService::default();
     let mut list: Vec<CanisterStatusResponseDto> = vec![];
     for canister_id in canister_ids {
         let result: CallResult<(CanisterStatusResponse, )> = call(
