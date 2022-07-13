@@ -1,7 +1,7 @@
 import {DataTable, Given, Then, When} from "@cucumber/cucumber";
 import {createMonitorActor} from "../../src/scripts/declarations";
 import {identity, dfxJson, canister} from '@deland-labs/ic-dev-kit';
-import logger from "node-color-log";
+import * as logger from "node-color-log";
 import {Principal} from "@dfinity/principal";
 import {addMonitorAsController} from "./utils";
 import {assert, expect} from "chai";
