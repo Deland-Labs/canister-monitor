@@ -26,14 +26,14 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
         return GetCanisterStatusResponse::new(Err(result.err().unwrap().into()));
     }
     let _service = MonitorService::default();
-    let result: CallResult<(CanisterStatusResponse, )> = call(
+    let result: CallResult<(CanisterStatusResponse,)> = call(
         Principal::management_canister(),
         "canister_status",
         (CanisterIdRequest {
             canister_id: canister_id.clone(),
-        }, ),
+        },),
     )
-        .await;
+    .await;
 
     let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
 
@@ -51,23 +51,25 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
     let _service = MonitorService::default();
     let mut list: Vec<GetCanisterStatusResponse> = vec![];
     for canister_id in canister_ids {
-        let result: CallResult<(CanisterStatusResponse, )> = call(
+        let result: CallResult<(CanisterStatusResponse,)> = call(
             Principal::management_canister(),
             "canister_status",
             (CanisterIdRequest {
                 canister_id: canister_id.clone(),
-            }, ),
+            },),
         )
-            .await;
+        .await;
 
         match result {
             Ok(result) => list.push(GetCanisterStatusResponse::new(Ok(
                 CanisterStatusResponseDto::new(canister_id, result.0),
             ))),
-            Err(err) => list.push(GetCanisterStatusResponse::new(Err(CommonError::CanisterCallError {
-                rejection_code: format!("{:?}", err.0),
-                message: err.1,
-            }))),
+            Err(err) => list.push(GetCanisterStatusResponse::new(Err(
+                CommonError::CanisterCallError {
+                    rejection_code: format!("{:?}", err.0),
+                    message: err.1,
+                },
+            ))),
         };
     }
     GetCanisterStatusListResponse::new(Ok(list))

@@ -10,7 +10,6 @@ use std::ops::{Add, Sub};
 pub mod canister_api;
 pub mod constants;
 pub mod cycles_minting_types;
-pub mod dto;
 pub mod errors;
 pub mod http;
 pub mod ic_logger;
