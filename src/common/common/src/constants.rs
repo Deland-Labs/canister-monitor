@@ -1,7 +1,7 @@
 use crate::named_canister_ids::{CanisterNames, DEV_NAMED_CANISTER_IDS};
 use candid::Principal;
 use const_env::from_env;
-use log::{info};
+use log::info;
 use once_cell::sync::Lazy;
 use std::str::FromStr;
 

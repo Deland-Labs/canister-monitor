@@ -5,7 +5,7 @@ mod shared_actor;
 use crate::service::MonitorService;
 use candid::{candid_method, CandidType, Deserialize, Principal};
 use common::canister_api::ic_impl::CanisterIdRequest;
-use common::canister_api::{CanisterStatusResponse};
+use common::canister_api::CanisterStatusResponse;
 use common::errors::{ErrorInfo, ServiceResult};
 use common::ic_logger::ICLogger;
 use common::permissions::must_be_monitor;
@@ -13,7 +13,7 @@ use ic_cdk::api;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use ic_cdk_macros::*;
-use log::{info};
+use log::info;
 use std::sync::Once;
 use std::vec::Vec;
 
@@ -26,14 +26,14 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
         return GetCanisterStatusResponse::new(Err(result.err().unwrap().into()));
     }
     let _service = MonitorService::default();
-    let result: CallResult<(CanisterStatusResponse, )> = call(
+    let result: CallResult<(CanisterStatusResponse,)> = call(
         Principal::management_canister(),
         "canister_status",
         (CanisterIdRequest {
             canister_id: canister_id.clone(),
-        }, ),
+        },),
     )
-        .await;
+    .await;
 
     let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
 
@@ -51,20 +51,19 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
     let _service = MonitorService::default();
     let mut list: Vec<CanisterStatusResponseDto> = vec![];
     for canister_id in canister_ids {
-        let result: CallResult<(CanisterStatusResponse, )> = call(
+        let result: CallResult<(CanisterStatusResponse,)> = call(
             Principal::management_canister(),
             "canister_status",
             (CanisterIdRequest {
                 canister_id: canister_id.clone(),
-            }, ),
+            },),
         )
-            .await;
+        .await;
         let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
         list.push(result_dto);
     }
     GetCanisterStatusListResponse::new(Ok(list))
 }
-
 
 #[derive(Deserialize, CandidType, Clone, PartialEq, Eq, Debug)]
 pub struct CanisterStatusResponseDto {
@@ -74,13 +73,9 @@ pub struct CanisterStatusResponseDto {
 
 impl CanisterStatusResponseDto {
     pub fn new(canister: Principal, detail: CanisterStatusResponse) -> Self {
-        Self {
-            canister,
-            detail,
-        }
+        Self { canister, detail }
     }
 }
-
 
 #[derive(CandidType)]
 pub enum GetCanisterStatusResponse {

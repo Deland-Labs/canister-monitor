@@ -1,6 +1,4 @@
-use std::fmt::{Debug};
-
-
+use std::fmt::Debug;
 
 use async_trait::async_trait;
 use candid::{CandidType, Nat, Principal};
@@ -9,12 +7,8 @@ use ic_cdk::call;
 use log::{debug, error};
 use serde::{Deserialize, Serialize};
 
-
-
 use crate::errors::{ActorResult, CommonError, ErrorInfo};
 use crate::named_canister_ids::{get_named_get_canister_id, CanisterNames};
-
-
 
 pub mod ic_impl;
 
@@ -24,15 +18,15 @@ async fn call_core<T, TResult>(
     args: T,
     logging: bool,
 ) -> Result<TResult, CommonError>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     if logging {
         debug!("Calling {:?}::{}", canister_name, method);
     }
     let canister_id = get_named_get_canister_id(canister_name);
-    let call_result: Result<(TResult, ), (RejectionCode, String)> =
+    let call_result: Result<(TResult,), (RejectionCode, String)> =
         call(canister_id, method, args).await;
     if call_result.is_err() {
         let (code, message) = call_result.err().unwrap();
@@ -62,14 +56,14 @@ async fn call_core_by_id<T, TResult>(
     args: T,
     logging: bool,
 ) -> Result<TResult, CommonError>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     if logging {
         debug!("Calling {:?}::{}", canister_id, method);
     }
-    let call_result: Result<(TResult, ), (_, _)> = call(canister_id, method, args).await;
+    let call_result: Result<(TResult,), (_, _)> = call(canister_id, method, args).await;
     if call_result.is_err() {
         let (code, message) = call_result.err().unwrap();
         let code_string = format!("{:?}", code);
@@ -97,9 +91,9 @@ async fn call_canister_by_id_as_icns_result<T, TResult>(
     method: &str,
     args: T,
 ) -> ActorResult<TResult>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     let result = call_core_by_id::<T, ActorResult<TResult>>(canister_id, method, args, true).await;
     match result {
@@ -113,9 +107,9 @@ async fn call_canister_as_icns_result<T, TResult>(
     method: &str,
     args: T,
 ) -> ActorResult<TResult>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     let result = call_core::<T, ActorResult<TResult>>(canister_name, method, args, true).await;
     match result {
@@ -129,9 +123,9 @@ async fn call_canister_as_result<T, TResult>(
     method: &str,
     args: T,
 ) -> ActorResult<TResult>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     call_core::<T, TResult>(canister_name, method, args, true)
         .await
@@ -143,9 +137,9 @@ async fn call_canister_as_result_no_logging<T, TResult>(
     method: &str,
     args: T,
 ) -> ActorResult<TResult>
-    where
-        T: candid::utils::ArgumentEncoder,
-        TResult: for<'a> Deserialize<'a> + CandidType + Debug,
+where
+    T: candid::utils::ArgumentEncoder,
+    TResult: for<'a> Deserialize<'a> + CandidType + Debug,
 {
     call_core::<T, TResult>(canister_name, method, args, false)
         .await
