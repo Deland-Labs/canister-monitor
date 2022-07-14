@@ -1,0 +1,31 @@
+name: publish Node.js Package
+on:
+  release:
+    types: [published]
+jobs:
+  Build-and-Publish:
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.io/kentsday/dfx_rust:bullseye-dfx-0.10.1-1
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+          cache-dependency-path: src/package-lock.json
+      - run: |
+          cd src
+          ./start.sh
+          ./sh_setup_dev.sh
+      - run: |
+          npm config set always-auth true
+          npm config set registry https:${REGISTRY}
+          npm config set ${REGISTRY}:_authToken ${{ secrets.MY_GET_TOKEN }}
+          npm config set @deland-labs:registry https:${REGISTRY}
+          Version=$(git describe --tags --abbrev=0)
+          cd src
+          ./sh_publish.sh $Version
+        env: 
+          REGISTRY: //gitlab.com/api/v4/projects/37663507/packages/npm/
+
