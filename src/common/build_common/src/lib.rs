@@ -8,7 +8,7 @@ pub fn generate_envs() -> Result<()> {
     // generate git info
     vergen(Config::default())?;
 
-    println!("rerun-if-env-changed=NAMING_CANISTER_ENV");
+    println!("rerun-if-env-changed=MONITOR_CANISTER_ENV");
     let env = if let Some(env) = option_env!("MONITOR_CANISTER_ENV") {
         env
     } else {
