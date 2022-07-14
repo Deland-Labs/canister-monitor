@@ -1,7 +1,7 @@
 use crate::Principal;
 use common::canister_api::ic_impl::ManagementApi;
 use common::canister_api::{CanisterStatusResponse, IManagementApi};
-use common::errors::{ActorResult, ServiceResult};
+use common::errors::ServiceResult;
 use log::debug;
 use std::sync::Arc;
 

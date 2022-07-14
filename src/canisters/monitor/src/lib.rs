@@ -13,7 +13,7 @@ use ic_cdk::api;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use ic_cdk_macros::*;
-use log::{debug, info};
+use log::info;
 use std::sync::Once;
 use std::vec::Vec;
 
@@ -25,7 +25,7 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
     if result.is_err() {
         return GetCanisterStatusResponse::new(Err(result.err().unwrap().into()));
     }
-    let service = MonitorService::default();
+    let _service = MonitorService::default();
     let result: CallResult<(CanisterStatusResponse,)> = call(
         Principal::management_canister(),
         "canister_status",
@@ -34,8 +34,10 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
         },),
     )
     .await;
-    debug!("result1= {:?}", result);
-    GetCanisterStatusResponse::new(Ok(result.unwrap().0))
+
+    let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
+
+    GetCanisterStatusResponse::new(Ok(result_dto))
 }
 
 #[update(name = "get_canister_status_list")]
@@ -46,9 +48,8 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
     if result.is_err() {
         return GetCanisterStatusListResponse::new(Err(result.err().unwrap().into()));
     }
-    debug!("123");
-    let service = MonitorService::default();
-    let mut list: Vec<CanisterStatusResponse> = vec![];
+    let _service = MonitorService::default();
+    let mut list: Vec<CanisterStatusResponseDto> = vec![];
     for canister_id in canister_ids {
         let result: CallResult<(CanisterStatusResponse,)> = call(
             Principal::management_canister(),
@@ -58,20 +59,32 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
             },),
         )
         .await;
-        debug!("result1= {:?}", result);
-        list.push(result.unwrap().0);
+        let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
+        list.push(result_dto);
     }
     GetCanisterStatusListResponse::new(Ok(list))
 }
 
+#[derive(Deserialize, CandidType, Clone, PartialEq, Eq, Debug)]
+pub struct CanisterStatusResponseDto {
+    canister: Principal,
+    detail: CanisterStatusResponse,
+}
+
+impl CanisterStatusResponseDto {
+    pub fn new(canister: Principal, detail: CanisterStatusResponse) -> Self {
+        Self { canister, detail }
+    }
+}
+
 #[derive(CandidType)]
 pub enum GetCanisterStatusResponse {
-    Ok(CanisterStatusResponse),
+    Ok(CanisterStatusResponseDto),
     Err(ErrorInfo),
 }
 
 impl GetCanisterStatusResponse {
-    pub fn new(result: ServiceResult<CanisterStatusResponse>) -> GetCanisterStatusResponse {
+    pub fn new(result: ServiceResult<CanisterStatusResponseDto>) -> GetCanisterStatusResponse {
         match result {
             Ok(canister_status) => GetCanisterStatusResponse::Ok(canister_status),
             Err(err) => GetCanisterStatusResponse::Err(err.into()),
@@ -81,13 +94,13 @@ impl GetCanisterStatusResponse {
 
 #[derive(CandidType)]
 pub enum GetCanisterStatusListResponse {
-    Ok(Vec<CanisterStatusResponse>),
+    Ok(Vec<CanisterStatusResponseDto>),
     Err(ErrorInfo),
 }
 
 impl GetCanisterStatusListResponse {
     pub fn new(
-        result: ServiceResult<Vec<CanisterStatusResponse>>,
+        result: ServiceResult<Vec<CanisterStatusResponseDto>>,
     ) -> GetCanisterStatusListResponse {
         match result {
             Ok(canisters_status) => GetCanisterStatusListResponse::Ok(canisters_status),

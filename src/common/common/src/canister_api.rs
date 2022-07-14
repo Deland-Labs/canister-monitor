@@ -1,20 +1,14 @@
-use std::fmt::{Debug, Display, Formatter};
-use std::io::Write;
-use std::str::FromStr;
+use std::fmt::Debug;
 
 use async_trait::async_trait;
-use candid::{CandidType, Encode, Nat, Principal};
+use candid::{CandidType, Nat, Principal};
 use ic_cdk::api::call::RejectionCode;
 use ic_cdk::call;
 use log::{debug, error};
 use serde::{Deserialize, Serialize};
 
-use crate::cycles_minting_types::IcpXdrConversionRateCertifiedResponse;
-use crate::dto::*;
 use crate::errors::{ActorResult, CommonError, ErrorInfo};
 use crate::named_canister_ids::{get_named_get_canister_id, CanisterNames};
-use sha2::{Digest, Sha224};
-use url::Url;
 
 pub mod ic_impl;
 

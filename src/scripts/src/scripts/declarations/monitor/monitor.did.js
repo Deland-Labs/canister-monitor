@@ -18,13 +18,17 @@ export const idlFactory = ({ IDL }) => {
     'settings' : DefiniteCanisterSettings,
     'module_hash' : IDL.Opt(IDL.Vec(IDL.Nat8)),
   });
+  const CanisterStatusResponseDto = IDL.Record({
+    'detail' : CanisterStatusResponse,
+    'canister' : IDL.Principal,
+  });
   const ErrorInfo = IDL.Record({ 'code' : IDL.Nat32, 'message' : IDL.Text });
   const GetCanisterStatusResponse = IDL.Variant({
-    'Ok' : CanisterStatusResponse,
+    'Ok' : CanisterStatusResponseDto,
     'Err' : ErrorInfo,
   });
   const GetCanisterStatusListResponse = IDL.Variant({
-    'Ok' : IDL.Vec(CanisterStatusResponse),
+    'Ok' : IDL.Vec(CanisterStatusResponseDto),
     'Err' : ErrorInfo,
   });
   return IDL.Service({

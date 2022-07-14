@@ -7,6 +7,10 @@ type CanisterStatusResponse = record {
   settings : DefiniteCanisterSettings;
   module_hash : opt vec nat8;
 };
+type CanisterStatusResponseDto = record {
+  detail : CanisterStatusResponse;
+  canister : principal;
+};
 type DefiniteCanisterSettings = record {
   freezing_threshold : nat;
   controllers : vec principal;
@@ -15,11 +19,11 @@ type DefiniteCanisterSettings = record {
 };
 type ErrorInfo = record { code : nat32; message : text };
 type GetCanisterStatusListResponse = variant {
-  Ok : vec CanisterStatusResponse;
+  Ok : vec CanisterStatusResponseDto;
   Err : ErrorInfo;
 };
 type GetCanisterStatusResponse = variant {
-  Ok : CanisterStatusResponse;
+  Ok : CanisterStatusResponseDto;
   Err : ErrorInfo;
 };
 service : () -> {
