@@ -24,7 +24,7 @@ export interface DefiniteCanisterSettings {
 }
 export interface ErrorInfo { 'code' : number, 'message' : string }
 export type GetCanisterStatusListResponse = {
-    'Ok' : Array<CanisterStatusResponseDto>
+    'Ok' : Array<GetCanisterStatusResponse>
   } |
   { 'Err' : ErrorInfo };
 export type GetCanisterStatusResponse = { 'Ok' : CanisterStatusResponseDto } |

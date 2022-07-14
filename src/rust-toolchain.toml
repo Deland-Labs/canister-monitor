@@ -1,5 +1,5 @@
 [toolchain]
-channel = "stable"
+channel = "nightly"
 components = [
     "rustc",
     "rust-std",
@@ -8,4 +8,3 @@ components = [
     "llvm-tools-preview",
 ]
 targets = ["wasm32-unknown-unknown"]
-profile = "minimal"

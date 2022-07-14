@@ -28,7 +28,7 @@ export const idlFactory = ({ IDL }) => {
     'Err' : ErrorInfo,
   });
   const GetCanisterStatusListResponse = IDL.Variant({
-    'Ok' : IDL.Vec(CanisterStatusResponseDto),
+    'Ok' : IDL.Vec(GetCanisterStatusResponse),
     'Err' : ErrorInfo,
   });
   return IDL.Service({

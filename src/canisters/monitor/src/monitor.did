@@ -19,7 +19,7 @@ type DefiniteCanisterSettings = record {
 };
 type ErrorInfo = record { code : nat32; message : text };
 type GetCanisterStatusListResponse = variant {
-  Ok : vec CanisterStatusResponseDto;
+  Ok : vec GetCanisterStatusResponse;
   Err : ErrorInfo;
 };
 type GetCanisterStatusResponse = variant {
