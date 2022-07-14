@@ -12,6 +12,10 @@ export interface CanisterStatusResponse {
   'settings' : DefiniteCanisterSettings,
   'module_hash' : [] | [Array<number>],
 }
+export interface CanisterStatusResponseDto {
+  'detail' : CanisterStatusResponse,
+  'canister' : Principal,
+}
 export interface DefiniteCanisterSettings {
   'freezing_threshold' : bigint,
   'controllers' : Array<Principal>,
@@ -20,10 +24,10 @@ export interface DefiniteCanisterSettings {
 }
 export interface ErrorInfo { 'code' : number, 'message' : string }
 export type GetCanisterStatusListResponse = {
-    'Ok' : Array<CanisterStatusResponse>
+    'Ok' : Array<CanisterStatusResponseDto>
   } |
   { 'Err' : ErrorInfo };
-export type GetCanisterStatusResponse = { 'Ok' : CanisterStatusResponse } |
+export type GetCanisterStatusResponse = { 'Ok' : CanisterStatusResponseDto } |
   { 'Err' : ErrorInfo };
 export interface _SERVICE {
   'get_canister_status' : ActorMethod<[Principal], GetCanisterStatusResponse>,
