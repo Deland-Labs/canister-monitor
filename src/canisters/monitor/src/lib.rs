@@ -6,7 +6,7 @@ use crate::service::MonitorService;
 use candid::{candid_method, CandidType, Deserialize, Principal};
 use common::canister_api::ic_impl::CanisterIdRequest;
 use common::canister_api::CanisterStatusResponse;
-use common::errors::{ErrorInfo, ServiceResult};
+use common::errors::{CommonError, ErrorInfo, ServiceResult};
 use common::ic_logger::ICLogger;
 use common::permissions::must_be_monitor;
 use ic_cdk::api;
@@ -26,14 +26,14 @@ async fn get_canister_status(canister_id: Principal) -> GetCanisterStatusRespons
         return GetCanisterStatusResponse::new(Err(result.err().unwrap().into()));
     }
     let _service = MonitorService::default();
-    let result: CallResult<(CanisterStatusResponse,)> = call(
+    let result: CallResult<(CanisterStatusResponse, )> = call(
         Principal::management_canister(),
         "canister_status",
         (CanisterIdRequest {
             canister_id: canister_id.clone(),
-        },),
+        }, ),
     )
-    .await;
+        .await;
 
     let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
 
@@ -49,18 +49,26 @@ async fn get_canister_status_list(canister_ids: Vec<Principal>) -> GetCanisterSt
         return GetCanisterStatusListResponse::new(Err(result.err().unwrap().into()));
     }
     let _service = MonitorService::default();
-    let mut list: Vec<CanisterStatusResponseDto> = vec![];
+    let mut list: Vec<GetCanisterStatusResponse> = vec![];
     for canister_id in canister_ids {
-        let result: CallResult<(CanisterStatusResponse,)> = call(
+        let result: CallResult<(CanisterStatusResponse, )> = call(
             Principal::management_canister(),
             "canister_status",
             (CanisterIdRequest {
                 canister_id: canister_id.clone(),
-            },),
+            }, ),
         )
-        .await;
-        let result_dto = CanisterStatusResponseDto::new(canister_id, result.unwrap().0);
-        list.push(result_dto);
+            .await;
+
+        match result {
+            Ok(result) => list.push(GetCanisterStatusResponse::new(Ok(
+                CanisterStatusResponseDto::new(canister_id, result.0),
+            ))),
+            Err(err) => list.push(GetCanisterStatusResponse::new(Err(CommonError::CanisterCallError {
+                rejection_code: format!("{:?}", err.0),
+                message: err.1,
+            }))),
+        };
     }
     GetCanisterStatusListResponse::new(Ok(list))
 }
@@ -94,13 +102,13 @@ impl GetCanisterStatusResponse {
 
 #[derive(CandidType)]
 pub enum GetCanisterStatusListResponse {
-    Ok(Vec<CanisterStatusResponseDto>),
+    Ok(Vec<GetCanisterStatusResponse>),
     Err(ErrorInfo),
 }
 
 impl GetCanisterStatusListResponse {
     pub fn new(
-        result: ServiceResult<Vec<CanisterStatusResponseDto>>,
+        result: ServiceResult<Vec<GetCanisterStatusResponse>>,
     ) -> GetCanisterStatusListResponse {
         match result {
             Ok(canisters_status) => GetCanisterStatusListResponse::Ok(canisters_status),
