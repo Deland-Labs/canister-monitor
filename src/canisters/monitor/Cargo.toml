@@ -22,7 +22,7 @@ test_common = { path = "../../common/test_common" }
 async-std = { version = "1.12", features = ["attributes"] }
 
 [build-dependencies]
-anyhow = "1.0.58"
+anyhow = "1.0.82"
 build_common = { path = "../../common/build_common" }
 
 [features]
